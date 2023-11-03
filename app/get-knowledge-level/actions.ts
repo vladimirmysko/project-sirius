@@ -19,39 +19,33 @@ export async function getKnowledgeLevel(formData: FormData) {
   const question4 = formData.get('question-4')
   const answer4 = formData.get('answer-4')
 
-  console.log({
-    first: { question0, answer0 },
-    second: { question1, answer1 },
-    third: { question2, answer2 },
-    fouth: { question3, answer3 },
-    fifth: { question4, answer4 },
-  })
-
   const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
   })
 
-  const content = `Студент хочет получить учебный план по предмету python. Один из параметров для получения учебного плана - это уровень знаний по предмету. Он прошел тестирование по предмету на определения уровня знания. Я предоставлю вопрос и ответ от студента.
+  const content = `Студент хочет получить учебный план по предмету 'Язык программирование Python'. Один из параметров для получения учебного плана - это уровень знаний по предмету. Он прошел тестирование по предмету на определения уровня знания. Я предоставлю вопрос и ответ от студента.
   
+  ---
   Вопрос 1: ${question0}
   Ответ 1: ${answer0}
   
-  Вопрос 2: ${question0}
-  Ответ 2: ${answer0}
+  Вопрос 2: ${question1}
+  Ответ 2: ${answer1}
   
-  Вопрос 3: ${question0}
-  Ответ 3: ${answer0}
+  Вопрос 3: ${question2}
+  Ответ 3: ${answer2}
   
-  Вопрос 4: ${question0}
-  Ответ 4: ${answer0}
+  Вопрос 4: ${question3}
+  Ответ 4: ${answer3}
   
-  Вопрос 5: ${question0}
-  Ответ 5: ${answer0}
+  Вопрос 5: ${question4}
+  Ответ 5: ${answer4}
+  ---
   
-  На основе этиз данных определи уровень знания по предмету python. Твой ответ должен содержать одно слово: beginner, middle, advanced.`
+  На основе этиз данных определи уровень знания по предмету 'Язык программирование Python'. Твой ответ должен содержать одно слово: beginner, middle, advanced. Beginner - это начинающий. Middle - это средний. Advanced - это продвинутый.`
 
   const response = await openai.chat.completions.create({
-    model: 'gpt-4',
+    model: 'gpt-3.5-turbo',
     stream: false,
     messages: [
       {
@@ -61,7 +55,5 @@ export async function getKnowledgeLevel(formData: FormData) {
     ],
   })
 
-  redirect(
-    `/course-configurator?level=${response.choices[0].message.content}&subject=python`,
-  )
+  redirect(`/syllabus/create?level=${response.choices[0].message.content}`)
 }

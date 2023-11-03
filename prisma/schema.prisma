@@ -1,0 +1,47 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Syllabus {
+  id      String  @id @default(cuid())
+  subject String
+  months  Month[]
+
+  @@map("syllabuses")
+}
+
+model Month {
+  id         Int      @id @default(autoincrement())
+  syllabus   Syllabus @relation(fields: [syllabusId], references: [id])
+  syllabusId String   @map("syllabus_id")
+  weeks      Week[]
+
+  @@map("months")
+}
+
+model Week {
+  id      Int       @id @default(autoincrement())
+  theme   String
+  month   Month     @relation(fields: [monthId], references: [id])
+  monthId Int       @map("month_id")
+  Content Content[]
+
+  @@map("weeks")
+}
+
+model Content {
+  id     Int    @id @default(autoincrement())
+  text   String
+  week   Week   @relation(fields: [weekId], references: [id])
+  weekId Int    @map("week_id")
+
+  @@map("contents")
+}

@@ -1,29 +1,17 @@
 import OpenAI from 'openai'
 
+import { SubmitButton } from '@/components/submit-button'
 import { Label } from '@/components/ui/label'
 import { TextAreaField, TextArea } from '@/components/ui/text-area'
-import { Button } from '@/components/ui/button'
 
 import { getKnowledgeLevel } from './actions'
 
-interface IGetKnowledgeLevelPageProps {
-  searchParams: { subject?: 'python' | 'history' }
-}
-
-export default async function GetKnowledgeLevelPage({
-  searchParams,
-}: IGetKnowledgeLevelPageProps) {
-  const { subject } = searchParams
-
-  if (!subject) {
-    throw new Error('Нужен параметр subject в строке запроса')
-  }
-
+export default async function GetKnowledgeLevelPage() {
   const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
   })
 
-  const content = `Составь мне тест для оценки уровня знаний студента по предмету ${subject} на русском языке. Тест должен состоять из 5 вопросов и быть с открытыми вариантами ответа, то есть в тесте должны быть вопросы без вариантов ответа. Пользователь будет отвечать сам в текстовом блоке. Твой ответ должен содержать только структуру теста в формате JSON, без лишних слов. В структуре JSON ключ "questions" - это массив строк вопросов в двойных кавычках. Пример вопроса: "Как операторы 'is' и '==' отличаются друг от друга в Python?".
+  const content = `Составь мне тест для оценки уровня знаний студента по предмету 'Язык программирование Python' на русском языке. Тест должен состоять из 5 вопросов и быть с открытыми вариантами ответа, то есть в тесте должны быть вопросы без вариантов ответа. Пользователь будет отвечать сам в текстовом блоке. Твой ответ должен содержать только структуру теста в формате JSON, без лишних слов. В структуре JSON ключ "questions" - это массив строк вопросов в двойных кавычках. Пример вопроса: "Как операторы 'is' и '==' отличаются друг от друга в Python?".
 
   Структура JSON:
   {
@@ -31,10 +19,8 @@ export default async function GetKnowledgeLevelPage({
     questions: []
   }`
 
-  console.log(content)
-
   const response = await openai.chat.completions.create({
-    model: 'gpt-4',
+    model: 'gpt-3.5-turbo',
     stream: false,
     messages: [
       {
@@ -48,8 +34,6 @@ export default async function GetKnowledgeLevelPage({
     title: string
     questions: string[]
   } = JSON.parse(response.choices[0].message.content!)
-
-  console.log(test)
 
   return (
     <div className="flex min-h-screen flex-col items-stretch bg-white">
@@ -84,9 +68,7 @@ export default async function GetKnowledgeLevelPage({
                 />
               </TextAreaField>
             ))}
-            <Button className="self-end" type="submit">
-              Закончить экзамен
-            </Button>
+            <SubmitButton className="self-end">Закончить экзамен</SubmitButton>
           </form>
         </div>
       </main>

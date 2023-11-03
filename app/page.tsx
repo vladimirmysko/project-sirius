@@ -18,7 +18,7 @@ export default function HomePage() {
             Вы готовы?
           </p>
           <Link
-            href="/course-configurator?subject=python"
+            href="/course-configurator"
             className="flex flex-row items-baseline gap-2 self-center rounded-full bg-neutral-950 px-4 py-2 text-base font-medium text-white hover:bg-neutral-800"
           >
             <span>Начать</span>
