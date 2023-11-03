@@ -1,5 +1,8 @@
 import type { Config } from 'tailwindcss'
 
+import forms from '@tailwindcss/forms'
+import typography from '@tailwindcss/typography'
+
 const config: Config = {
   content: [
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
@@ -8,13 +11,12 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic':
-          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+      fontFamily: {
+        inter: ['var(--font-inter)'],
       },
     },
   },
-  plugins: [],
+  plugins: [typography, forms],
 }
+
 export default config
