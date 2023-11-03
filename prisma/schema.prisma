@@ -20,7 +20,7 @@ model Syllabus {
 
 model Month {
   id         Int      @id @default(autoincrement())
-  syllabus   Syllabus @relation(fields: [syllabusId], references: [id])
+  syllabus   Syllabus @relation(fields: [syllabusId], references: [id], onDelete: Cascade)
   syllabusId String   @map("syllabus_id")
   weeks      Week[]
 
@@ -28,20 +28,21 @@ model Month {
 }
 
 model Week {
-  id      Int       @id @default(autoincrement())
-  theme   String
-  month   Month     @relation(fields: [monthId], references: [id])
-  monthId Int       @map("month_id")
-  Content Content[]
+  id       Int       @id @default(autoincrement())
+  theme    String
+  month    Month     @relation(fields: [monthId], references: [id], onDelete: Cascade)
+  monthId  Int       @map("month_id")
+  contents Content[]
 
   @@map("weeks")
 }
 
 model Content {
-  id     Int    @id @default(autoincrement())
-  text   String
-  week   Week   @relation(fields: [weekId], references: [id])
-  weekId Int    @map("week_id")
+  id      Int     @id @default(autoincrement())
+  text    String
+  lecture String?
+  week    Week    @relation(fields: [weekId], references: [id], onDelete: Cascade)
+  weekId  Int     @map("week_id")
 
   @@map("contents")
 }

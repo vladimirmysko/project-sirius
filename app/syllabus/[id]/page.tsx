@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 
 interface ISyllabusPageProps {
@@ -9,7 +10,9 @@ export default async function SyllabusPage({ params }: ISyllabusPageProps) {
 
   const syllabus = await prisma.syllabus.findUnique({
     where: { id },
-    include: { months: { include: { weeks: { include: { Content: true } } } } },
+    include: {
+      months: { include: { weeks: { include: { contents: true } } } },
+    },
   })
 
   return (
@@ -20,7 +23,7 @@ export default async function SyllabusPage({ params }: ISyllabusPageProps) {
         </span>
       </header>
       <main className="flex flex-col items-center px-4 py-8">
-        <div className="flex w-full max-w-md flex-col items-stretch gap-8">
+        <div className="flex w-full max-w-md flex-col items-stretch gap-10">
           <h1 className="text-center text-xl font-semibold text-neutral-950">
             Учебный план: {syllabus?.subject}{' '}
           </h1>
@@ -31,13 +34,20 @@ export default async function SyllabusPage({ params }: ISyllabusPageProps) {
               </div>
               <ul className="list-none space-y-4">
                 {m.weeks.map((w, i) => (
-                  <li key={`w-${w.id}`}>
-                    <span className="mb-2 text-lg font-semibold">
+                  <li key={`w-${w.id}`} className="space-y-2">
+                    <span className="text-lg font-semibold">
                       {i + 1} Неделя
                     </span>
                     <ul className="list-inside list-disc">
-                      {w.Content.map((c) => (
-                        <li key={`c-${c.id}`}>{c.text}</li>
+                      {w.contents.map((c) => (
+                        <li key={`c-${c.id}`}>
+                          <Link
+                            href={`/contents/${c.id}`}
+                            className="tracking-wide hover:underline"
+                          >
+                            {c.text} <sup>↗</sup>
+                          </Link>
+                        </li>
                       ))}
                     </ul>
                   </li>

@@ -4,16 +4,16 @@ import { redirect } from 'next/navigation'
 import OpenAI from 'openai'
 import { prisma } from '@/lib/prisma'
 
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+})
+
 export async function createSyllabus(formData: FormData) {
   const level = formData.get('level')
   const goal = formData.get('goal')
   const courseTime = formData.get('course_time')
   const timeToStudy = formData.get('time_to_study')
   const extraInfo = formData.get('extra_info')
-
-  const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-  })
 
   const content = `Ты препадаватель мирового уровня по предмету "Язык программирования Python". Студент хочет получить учебный план исходя из нескольких параметров:
   - Уровень знаний по предмету: ${level};
@@ -67,6 +67,8 @@ export async function createSyllabus(formData: FormData) {
   const createdSyllabus = await prisma.syllabus.create({
     data: { subject: 'Язык программирования Python' },
   })
+
+  console.log(createdSyllabus)
 
   for (const month of syllabus.month) {
     const createdMonth = await prisma.month.create({
