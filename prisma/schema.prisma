@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Syllabus {
+  id      String  @id @default(cuid())
+  subject String
+  months  Month[]
+
+  @@map("syllabuses")
+}
+
+model Month {
+  id         Int      @id @default(autoincrement())
+  syllabus   Syllabus @relation(fields: [syllabusId], references: [id], onDelete: Cascade)
+  syllabusId String   @map("syllabus_id")
+  weeks      Week[]
+
+  @@map("months")
+}
+
+model Week {
+  id       Int       @id @default(autoincrement())
+  theme    String
+  month    Month     @relation(fields: [monthId], references: [id], onDelete: Cascade)
+  monthId  Int       @map("month_id")
+  contents Content[]
+
+  @@map("weeks")
+}
+
+model Content {
+  id      Int     @id @default(autoincrement())
+  text    String
+  lecture String?
+  week    Week    @relation(fields: [weekId], references: [id], onDelete: Cascade)
+  weekId  Int     @map("week_id")
+
+  @@map("contents")
+}
